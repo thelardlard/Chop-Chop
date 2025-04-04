@@ -18,7 +18,7 @@ public class CharacterController : MonoBehaviour, ICharacterController
     private Vector3 _gravity = new Vector3(0, -30f, 0);
 
     [SerializeField]
-    private float _maxStableMoveSpeed = 10f, _stableMovementSharpness = 15f, _orientationSharpness = 15f;
+    private float _maxStableMoveSpeed = 10f, _stableMovementSharpness = 15f, _orientationSharpness = 15f, _airMoveSpeed = 10f, _airControlSharpness = 15f;
 
     [SerializeField]
     private float _jumpSpeed = 10f;
@@ -112,7 +112,20 @@ public class CharacterController : MonoBehaviour, ICharacterController
         }
         else
         {
-            currentVelocity += _gravity * deltaTime;
+            
+                // Get right and forward directions in air using CharacterUp
+                Vector3 inputRight = Vector3.Cross(_moveInputVector, _motor.CharacterUp);
+                Vector3 reorientedInput = Vector3.Cross(_motor.CharacterUp, inputRight).normalized * _moveInputVector.magnitude;
+
+                // Target movement velocity in air
+                Vector3 targetMovementVelocity = reorientedInput * _airMoveSpeed;
+
+                // Smoothly interpolate to target movement velocity (air control)
+                currentVelocity = Vector3.Lerp(currentVelocity, targetMovementVelocity, 1f - Mathf.Exp(-_airControlSharpness * deltaTime));
+
+                // Apply gravity
+                currentVelocity.y += _gravity.y * deltaTime;
+            
         }
 
        if (_jumpRequested && _motor.GroundingStatus.IsStableOnGround)

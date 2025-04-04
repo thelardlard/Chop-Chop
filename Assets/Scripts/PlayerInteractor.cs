@@ -11,16 +11,11 @@ public class PlayerInteractor : MonoBehaviour
     private Tree _targetTree;
     [SerializeField]
     private Log _targetLog;
+    public bool HasTargetTree() => _targetTree != null;
 
     void Update()
     {
-        //DetectInteractable();
-
-        if (Input.GetKeyDown(KeyCode.Mouse0) && _targetTree != null)
-        {
-            _targetTree.ChopTree();
-        }
-
+             
         if (Input.GetKeyDown(KeyCode.E) && _targetLog != null)
         {
             PickUp(_targetLog);
@@ -35,7 +30,7 @@ public class PlayerInteractor : MonoBehaviour
         {
             Debug.Log("Tree Trigger entered");
             _targetTree = other.GetComponent<Tree>(); // Get the Tree component of the object that entered
-            _targetLog = null;
+            _targetLog = null;            
             UIManager.Instance.ShowInteraction("Left click to Chop");
         }
         if (other.CompareTag("Log"))
@@ -52,46 +47,6 @@ public class PlayerInteractor : MonoBehaviour
         ClearTargets();
     }
 
-
-
-
-
-    /*void DetectInteractable()
-    {
-        // Get the forward direction of the camera but flatten it (ignore Y component)
-        Vector3 flatDirection = _cameraTransform.forward;
-        flatDirection.y = 0; // Remove vertical tilt
-        flatDirection.Normalize(); // Keep direction consistent
-
-        Ray ray = new Ray(_playerTransform.position, flatDirection);
-        RaycastHit hit;
-        Debug.DrawRay(ray.origin, ray.direction * _interactionRange, Color.red); // Draw the ray in Scene View
-
-        if (Physics.Raycast(ray, out hit, _interactionRange, _interactableLayer))
-        {
-            Debug.Log("Hit: " + hit.collider.name); // Check what object is being hit
-                                                    // Get the interactable component (ANY type)
-            Component interactable = hit.collider.GetComponent<Tree>();
-
-            switch (interactable)
-            {
-                case Tree tree:
-                    _targetTree = tree;
-                    _targetLog = null;
-                    UIManager.Instance.ShowInteraction("Left click to Chop");
-                    break;
-                                    
-                default:
-                    ClearTargets();
-                    break;
-            }
-        }
-        else
-        {
-            ClearTargets();
-        }
-    }
-    */
     void PickUp(Log _targetLog)
 {
     InventoryManager.Instance.AddLog(1);
@@ -104,5 +59,10 @@ public void ClearTargets()
         _targetTree = null;
         _targetLog = null;
     }
-
+public void ChopTree()
+    {
+        _targetTree.ChopTree();
+    }
 }
+
+

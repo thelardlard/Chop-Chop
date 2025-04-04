@@ -2,12 +2,9 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    [SerializeField]
-    private PlayerCamera _playerCamera;
-    [SerializeField]
-    private Transform _cameraFollowPoint;
-    [SerializeField]
-    private CharacterController _characterController;
+    [SerializeField] private PlayerCamera _playerCamera;
+    [SerializeField] private Transform _cameraFollowPoint;
+    [SerializeField] private PlayerStateManager _stateManager;
 
     private Vector3 _lookInputVector;
 
@@ -29,13 +26,16 @@ public class Player : MonoBehaviour
 
     private void HandleCharacterInputs()
     {
-        PlayerInputs inputs = new PlayerInputs();
-        inputs.MoveAxisForward = Input.GetAxisRaw("Vertical");
-        inputs.MoveAxisRight = Input.GetAxisRaw("Horizontal");
-        inputs.CameraRotation = _playerCamera.transform.rotation;
-        inputs.JumpPressed = Input.GetKeyDown(KeyCode.Space);
+        MyPlayerInputs inputs = new MyPlayerInputs
+        {
+            MoveAxisForward = Input.GetAxisRaw("Vertical"),
+            MoveAxisRight = Input.GetAxisRaw("Horizontal"),
+            CameraRotation = _playerCamera.transform.rotation,
+            JumpPressed = Input.GetKeyDown(KeyCode.Space),
+            ChopPressed = Input.GetMouseButtonDown(0)
+        };
 
-        _characterController.SetInputs(ref inputs);
+        _stateManager.SetInputs(inputs);
     }
 
     private void Update()
@@ -47,5 +47,4 @@ public class Player : MonoBehaviour
     {
         HandleCameraInput();
     }
-
 }

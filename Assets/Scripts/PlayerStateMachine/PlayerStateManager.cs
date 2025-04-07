@@ -36,6 +36,15 @@ public class PlayerStateManager : MonoBehaviour, ICharacterController
     {
         Motor.CharacterController = this;
         SwitchState(MoveState);
+        Debug.Log("Animator name: " + Animator?.gameObject.name);
+    }
+
+    private void Update()
+    {
+        if (Animator == null)
+        {
+            Debug.LogWarning("Animator is NULL on PlayerStateManager!");
+        }
     }
 
     public void SwitchState(State newState)

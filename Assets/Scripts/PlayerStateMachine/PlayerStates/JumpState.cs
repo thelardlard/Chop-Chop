@@ -13,9 +13,10 @@ public class JumpState : State
     {
         _jumped = false;
         _timeSinceJump = 0f;
-
-        // TODO: Play jump animation here
+        Debug.Log("Entering JumpState");
         _stateManager.Animator.SetTrigger(AnimationParams.JumpTrigger);
+
+        
     }
 
     public override void HandleInput(MyPlayerInputs inputs)

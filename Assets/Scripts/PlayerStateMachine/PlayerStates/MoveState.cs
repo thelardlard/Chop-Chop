@@ -53,7 +53,13 @@ public class MoveState : State
             currentVelocity += _stateManager.Gravity * deltaTime;
         }
 
-        _stateManager.Animator.SetFloat(AnimationParams.Speed, _stateManager.MoveInputVector.magnitude);
+        //_stateManager.Animator.SetFloat(AnimationParams.Speed, _stateManager.MoveInputVector.magnitude);
+
+        float speed = _stateManager.MoveInputVector.magnitude;
+        //Debug.Log("Speed magnitude: " + speed);
+        _stateManager.Animator.SetFloat(AnimationParams.Speed, speed);
+        float animSpeed = _stateManager.Animator.GetFloat(AnimationParams.Speed);
+        //Debug.Log("Animator Speed parameter value: " + animSpeed);
     }
 
     public override void UpdateRotation(ref Quaternion currentRotation, float deltaTime)

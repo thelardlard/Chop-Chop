@@ -6,7 +6,7 @@ public class UIManager : MonoBehaviour
 {
     public static UIManager Instance;
     public TextMeshProUGUI _interactionText;
-    public TextMeshProUGUI _logCountText;
+    
 
     private void Awake()
     {
@@ -24,8 +24,5 @@ public class UIManager : MonoBehaviour
         _interactionText.gameObject.SetActive(false);
     }
 
-    public void UpdateLogCount(int count)
-    {
-        _logCountText.text = "Logs: " + count;
-    }
+    
 }

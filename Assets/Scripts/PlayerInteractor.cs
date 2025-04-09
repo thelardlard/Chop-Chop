@@ -3,13 +3,12 @@ using UnityEngine;
 
 public class PlayerInteractor : MonoBehaviour
 {
-    public float _interactionRange = 30f;
-    public LayerMask _interactableLayer;
+    public PlayerInventory playerInventory;
+    [SerializeField] private RepairTooltipUI tooltipUI;
+    public LayerMask _interactableLayer; //Is this doing anything?
     public Transform _cameraTransform;
     public Transform _playerTransform;
-    [SerializeField]
     private Tree _targetTree;
-    [SerializeField]
     private Log _targetLog;
     public bool HasTargetTree() => _targetTree != null;
 
@@ -18,20 +17,20 @@ public class PlayerInteractor : MonoBehaviour
              
         if (Input.GetKeyDown(KeyCode.E) && _targetLog != null)
         {
-            PickUp(_targetLog);
+            PickUp(_targetLog); //Pick up a log if one is in range and player presses E
         }
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("OnTriggerEnter called with: " + other.gameObject.name); // Debug to see which object entered the trigger
+        //Debug.Log("OnTriggerEnter called with: " + other.gameObject.name); // Debug to see which object entered the trigger
 
         if (other.CompareTag("Tree"))
         {
-            Debug.Log("Tree Trigger entered");
+            //Debug.Log("Tree Trigger entered");
             _targetTree = other.GetComponent<Tree>(); // Get the Tree component of the object that entered
-            _targetLog = null;            
-            UIManager.Instance.ShowInteraction("Left click to Chop");
+            _targetLog = null; //Ensure no target log is set            
+            UIManager.Instance.ShowInteraction("Left click to Chop"); //Show interaction UI
         }
         if (other.CompareTag("Log"))
         {
@@ -39,17 +38,32 @@ public class PlayerInteractor : MonoBehaviour
             _targetTree = null; // Get the Tree component of the object that entered
             _targetLog = other.GetComponent<Log>();
         }
+        if (other.CompareTag("Repairable"))
+        {
+            Debug.Log("Repairable Trigger Enterer");
+            var repairable = other.GetComponent<RepairableObject>();
+            if (repairable != null)
+            {
+                tooltipUI.Show(repairable);
+            }
+        }
 
     }
 
     private void OnTriggerExit(Collider other)
     {
         ClearTargets();
+        var repairable = other.GetComponent<RepairableObject>();
+        if (repairable != null)
+        {
+            tooltipUI.Hide();
+        }
+
     }
 
     void PickUp(Log _targetLog)
 {
-    InventoryManager.Instance.AddLog(1);
+    playerInventory.AddResource(ResourceType.Wood, 1);
     Destroy(_targetLog.gameObject);
         ClearTargets();
 }
@@ -58,6 +72,7 @@ public void ClearTargets()
         UIManager.Instance.ClearInteraction();
         _targetTree = null;
         _targetLog = null;
+
     }
 public void ChopTree()
     {

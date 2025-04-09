@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Tree
   - Log
+  - Repairable
   layers:
   - Default
   - TransparentFX

@@ -4,46 +4,50 @@ using UnityEngine;
 public class PlayerInteractor : MonoBehaviour
 {
     public PlayerInventory playerInventory;
-    [SerializeField] private RepairTooltipUI tooltipUI;
-    public LayerMask _interactableLayer; //Is this doing anything?
+    [SerializeField] private RepairTooltipUI tooltipUI;    
     public Transform _cameraTransform;
     public Transform _playerTransform;
     private Tree _targetTree;
-    private Log _targetLog;
+    private IInteractable _currentInteractable;
     public bool HasTargetTree() => _targetTree != null;
 
     void Update()
     {
-             
-        if (Input.GetKeyDown(KeyCode.E) && _targetLog != null)
+        if (Input.GetButtonDown("Interact") && _currentInteractable != null)
         {
-            PickUp(_targetLog); //Pick up a log if one is in range and player presses E
+            _currentInteractable.Interact();
+            ClearTargets();
         }
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        //Debug.Log("OnTriggerEnter called with: " + other.gameObject.name); // Debug to see which object entered the trigger
-
+    private void OnTriggerStay(Collider other)
+    {        
         if (other.CompareTag("Tree"))
         {
             //Debug.Log("Tree Trigger entered");
-            _targetTree = other.GetComponent<Tree>(); // Get the Tree component of the object that entered
-            _targetLog = null; //Ensure no target log is set            
+            _targetTree = other.GetComponent<Tree>(); // Get the Tree component of the object that entered                     
             UIManager.Instance.ShowInteraction("Left click to Chop"); //Show interaction UI
         }
-        if (other.CompareTag("Log"))
+        if (other.TryGetComponent<IInteractable>(out var interactable))
         {
-            UIManager.Instance.ShowInteraction("Press E to pickup");
-            _targetTree = null; // Get the Tree component of the object that entered
-            _targetLog = other.GetComponent<Log>();
-        }
-        if (other.CompareTag("Repairable"))
-        {
-            Debug.Log("Repairable Trigger Enterer");
-            var repairable = other.GetComponent<RepairableObject>();
-            if (repairable != null)
+            _currentInteractable = interactable;
+
+            if (interactable is Log)
             {
+                UIManager.Instance.ShowInteraction("Press E to pick up");
+            }            
+        }
+
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {        
+        if (other.TryGetComponent<IInteractable>(out var interactable))
+        {
+            _currentInteractable = interactable;                       
+            if (interactable is RepairableObject repairable)
+            {
+                repairable.Initialize(playerInventory, tooltipUI); // Give it access to inventory & tooltip UI
                 tooltipUI.Show(repairable);
             }
         }
@@ -52,29 +56,28 @@ public class PlayerInteractor : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        ClearTargets();
+        ClearTargets(); 
         var repairable = other.GetComponent<RepairableObject>();
         if (repairable != null)
         {
-            tooltipUI.Hide();
+            tooltipUI.Hide(); //Turns repair UI prompt off
         }
 
     }
 
     void PickUp(Log _targetLog)
 {
-    playerInventory.AddResource(ResourceType.Wood, 1);
-    Destroy(_targetLog.gameObject);
-        ClearTargets();
+    playerInventory.AddResource(ResourceType.Wood, 1); //Adds 1 wood to player inventory
+    Destroy(_targetLog.gameObject); //Destroys Log
+        ClearTargets(); 
 }
-public void ClearTargets()
+public void ClearTargets() //Ensures all targets are nulled when leaving a trigger zone
     {
-        UIManager.Instance.ClearInteraction();
+        UIManager.Instance.ClearInteraction(); 
         _targetTree = null;
-        _targetLog = null;
-
+        _currentInteractable = null;
     }
-public void ChopTree()
+public void ChopTree() //Runs the chop tree method contained in the target tree
     {
         _targetTree.ChopTree();
     }

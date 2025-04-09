@@ -253,6 +253,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _maxHits: 5
   _logPrefab: {fileID: 1631893485175825912, guid: 453152c13df325043bdf5ec3223cb7eb, type: 3}
+  stumpPrefab: {fileID: 3125019525012259300, guid: c8b350551fbedc84c8025d7d29f3a018, type: 3}
+  cutTreePrefab: {fileID: 545970749773444049, guid: ea0b801db837f0647b30fcab0296ad0b, type: 3}
+  particlePrefab: {fileID: 0}
 --- !u!136 &9187278186716656145
 CapsuleCollider:
   m_ObjectHideFlags: 0

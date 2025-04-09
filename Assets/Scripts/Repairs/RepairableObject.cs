@@ -2,19 +2,28 @@
 using UnityEngine;
 using System.Collections;
 
-public class RepairableObject : MonoBehaviour
+public class RepairableObject : MonoBehaviour, IInteractable
 {
     public RepairableData data;
     private bool isRepaired = false;
+    private PlayerInventory _playerInventory;
+    private RepairTooltipUI _tooltipUI;
 
-    public void TryRepair(PlayerInventory inventory)
+    public void Initialize(PlayerInventory inventory, RepairTooltipUI tooltipUI)
     {
-        if (isRepaired) return;
+        _playerInventory = inventory;
+        _tooltipUI = tooltipUI;
+    }
 
-        if (inventory.HasEnough(data))
-        {
-            inventory.SpendResources(data);
-            StartCoroutine(DoRepair());
+    public void Interact()
+    {
+        if (isRepaired || _playerInventory == null) return;
+
+        if (_playerInventory.HasEnough(data))
+        {            
+            _playerInventory.SpendResources(data);                     
+            _tooltipUI.Hide(); // Hide the tooltip immediately
+            StartCoroutine(DoRepair());            
         }
     }
 

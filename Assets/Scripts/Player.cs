@@ -31,8 +31,8 @@ public class Player : MonoBehaviour
             MoveAxisForward = Input.GetAxisRaw("Vertical"),
             MoveAxisRight = Input.GetAxisRaw("Horizontal"),
             CameraRotation = _playerCamera.transform.rotation,
-            JumpPressed = Input.GetKeyDown(KeyCode.Space),
-            ChopPressed = Input.GetMouseButtonDown(0)
+            JumpPressed = Input.GetButtonDown("Jump"),
+            ChopPressed = Input.GetButtonDown("Fire1")
         };
 
         _stateManager.SetInputs(inputs);

@@ -14,7 +14,7 @@ public class PlayerInventory : MonoBehaviour
         {
             resources[type] = 0;
         }
-             
+        resources[ResourceType.Wood] = 30;     
         TriggerUpdate(); // Initial UI update
     }
 

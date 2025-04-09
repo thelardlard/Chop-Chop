@@ -7,6 +7,7 @@ TagManager:
   - Tree
   - Log
   - Repairable
+  - Ground
   layers:
   - Default
   - TransparentFX
@@ -14,7 +15,7 @@ TagManager:
   - Interactable
   - Water
   - UI
-  - 
+  - Terrain
   - 
   - 
   - 

@@ -9,6 +9,12 @@ public class CutTreeTop : MonoBehaviour
     [SerializeField] private float minImpactVelocity = 2f;
     private bool _hasExploded = false;
     private float _timeSinceSpawn = 0f;
+    private int _logsToSpawn = 3;
+
+    public void SetLogCount(int count)
+    {
+        _logsToSpawn = Mathf.Max(1, count); // Ensure at least 1 log
+    }
 
     private void Update()
     {
@@ -51,7 +57,8 @@ public class CutTreeTop : MonoBehaviour
     {
         _hasExploded = true;
         Vector3 origin = transform.position;
-        for (int i = 0; i < 3; i++)
+
+        for (int i = 0; i < _logsToSpawn; i++)
         {
             Vector3 offset = transform.forward * i * 2f;
             Vector3 spawnPosition = origin + offset;

@@ -6,24 +6,29 @@ public class Tree : MonoBehaviour
     //private int _currentHits = 0; //How many chops has the tree recieved
     
     public GameObject stumpPrefab;
-    public GameObject cutTreePrefab;    
-    
-    
-    /*public void ChopTree()
+    public GameObject cutTreePrefab;
+
+    public ParticleSystem smokeRing;
+    public ParticleSystem smokeLength;
+
+    public void PlaySmokeRing(float scale)
     {
-        _currentHits++; //Increase chops recieved by 1
-
-        THINGS TO DO
-         * Change the way this works to some sort of rhythym game
-         * Add visual effects and sound effects
-         
-
-        if (_currentHits >= _maxHits)
+        if (smokeRing != null)
         {
-            FallTreelo); //Cut down tree if current hits equals max hits
+            smokeRing.transform.localScale = Vector3.one * scale;
+            smokeRing.Play();
         }
     }
-*/
+
+    public void PlaySmokeLength()
+    {
+        if (smokeLength != null)
+        {
+            smokeLength.transform.parent = null; // Detach from tree
+            smokeLength.Play();
+        }
+    }
+    
 
     public void FallTree(int logsToSpawn)
     {
@@ -56,10 +61,7 @@ public class Tree : MonoBehaviour
         // 3. Destroy original tree
         Destroy(gameObject);
         
-        /*THINGS TO DO
-         * Change the destroyed tree to a stump and a cut tree prefab and allow the tree to fall. Upon collision with ground, explode into 3 log prefabs?
-         * Add visual effects and sound effects
-         */
+        
 
     }
 }

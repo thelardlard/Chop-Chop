@@ -26,10 +26,15 @@ public class RhythmMinigame : MonoBehaviour
     private float _currentAngle;
     private bool _active;
     private int _successCount;
+    private Tree _targetTree;
 
     // Allowed angles (0° at top, then clockwise every 40°)
     private readonly List<float> _allowedAngles = new() { 0f, 40f, 80f, 120f, 160f, 200f, 240f, 280f, 320f };
     private int[] _currentPattern = new int[] { 0, 3, 6 };  // Default: 0°, 120°, 240°
+
+    // Audio Clips
+    public AudioClip successSound;
+    public AudioClip failSound;
 
     /// <summary>
     /// Starts the rhythm sequence using the given pattern indices (into _allowedAngles).
@@ -40,6 +45,13 @@ public class RhythmMinigame : MonoBehaviour
         _rotationSpeed = 360f / rotationDuration;
         _totalTime = rotationDuration * rotations;
         StartCoroutine(RhythmSequence());
+    }
+
+    
+
+    public void SetTargetTree(Tree tree)
+    {
+        _targetTree = tree;
     }
 
     private IEnumerator RhythmSequence()
@@ -85,10 +97,16 @@ public class RhythmMinigame : MonoBehaviour
             if (IsInSweetSpot(_currentAngle))
             {
                 _successCount++;
+                AudioManager.Instance.PlayUIClip(successSound);
+                if (_targetTree != null)
+                    _targetTree.PlaySmokeRing(0.5f); // Bigger ring on success
                 // TODO: Play hit VFX/SFX
             }
             else
             {
+                AudioManager.Instance.PlayUIClip(failSound);
+                if (_targetTree != null)
+                    _targetTree.PlaySmokeRing(0.25f); // Smaller ring on miss
                 // TODO: Play miss VFX/SFX
             }
         }
@@ -96,7 +114,11 @@ public class RhythmMinigame : MonoBehaviour
         // End condition
         if (_elapsedTime >= _totalTime)
         {
-            _active = false;
+            if (_targetTree != null)
+            {                
+                _targetTree.PlaySmokeLength(); 
+            }
+            _active = false;            
             OnRhythmComplete?.Invoke(_successCount);
         }
     }

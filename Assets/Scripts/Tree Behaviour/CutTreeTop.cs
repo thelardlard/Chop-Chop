@@ -71,7 +71,14 @@ public class CutTreeTop : MonoBehaviour
             }
             Instantiate(logPrefab, spawnPosition, Quaternion.identity);
         }
-        Instantiate(particlePrefab, transform.position, Quaternion.identity);
-        Destroy(gameObject);
+        var particleSystem = GetComponentInChildren<ParticleSystem>();
+        if (particleSystem != null)
+        {
+            particleSystem.transform.parent = null; // Detach from tree
+            particleSystem.Play();
+            Destroy(particleSystem.gameObject, particleSystem.main.duration + particleSystem.main.startLifetime.constantMax);
+        }
+
+        Destroy(gameObject); // Immediately destroy the tree        
     }
 }

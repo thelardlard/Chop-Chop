@@ -17,7 +17,7 @@ public class ChopState : State
 
         if (_targetTree != null)
         {
-            _rhythmMinigame = UIManager.Instance.StartRhythmMinigame(OnRhythmComplete);
+            _rhythmMinigame = UIManager.Instance.StartRhythmMinigame(OnRhythmComplete, _targetTree);
         }
         else
         {
